@@ -1,0 +1,16 @@
+Favicon try this https://favicon.io/
+
+------------------------------BACKEND-----------------------
+ * "type":"module", in package helps to use es6(import/export feature)
+* import notFoundMiddleware from "./middleware/not-found.js"=> .js is needed for node if we are using ES6
+* mongoose connect method return a promise so async and await is needed
+* next (err) will pass to error handler middleware bu authController
+     const register=async(req,res,next)=>{
+    try{
+        const user =await User.create(req.body);
+        res.status(201).json({user})
+    }catch(err){
+        next(err)
+    }
+}
+* Uisng 'express-async-errors' helps not to write try catch blocks in every controller, this package will pass it to next middleware i,e error-handler
