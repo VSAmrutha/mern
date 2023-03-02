@@ -11,9 +11,10 @@ import errorHandlerMiddleware from "./middleware/error-handler.js"
 import authRouter from './routes/authRoutes.js'
 import jobsRouter from './routes/jobsRoutes.js'
 app.use(express.json())
-app.get("/",(req,res)=>{
-    res.send("you are the best amu")
+app.get("/api/v1",(req,res)=>{
+    res.json({msg:"you are the best amu"})
 })
+
 app.use('/api/v1/auth',authRouter);
 app.use('/api/v1/jobs',jobsRouter);
 app.use(notFoundMiddleware)
