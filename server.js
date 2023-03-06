@@ -1,5 +1,6 @@
 import express from 'express';
-import cors from 'cors'
+//import cors from 'cors'
+import morgan from 'morgan'
 import dotenv from 'dotenv';
 dotenv.config();
 import 'express-async-errors'
@@ -12,6 +13,9 @@ import errorHandlerMiddleware from "./middleware/error-handler.js"
 import authRouter from './routes/authRoutes.js'
 import jobsRouter from './routes/jobsRoutes.js'
 //app.use(cors())
+if(process.env.NODE_ENV!=='production'){
+    app.use(morgan('dev'))
+}
 app.use(express.json())
 app.get("/api/v1",(req,res)=>{
     res.json({msg:"you are the best amu"})
