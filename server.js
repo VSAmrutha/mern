@@ -1,5 +1,5 @@
 import express from 'express';
-//import cors from 'cors'
+import cors from 'cors'
 import morgan from 'morgan'
 import dotenv from 'dotenv';
 dotenv.config();
@@ -26,7 +26,7 @@ app.use('/api/v1/jobs',jobsRouter);
 app.use(notFoundMiddleware)
 // place always as last route
 app.use(errorHandlerMiddleware)
-const port =process.env.PORT || 3000
+const port =process.env.PORT || 4000
 
 const start=async()=>{
     try{

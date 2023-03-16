@@ -73,12 +73,9 @@ const AppProvider=({children})=>{
         try{
             const {data}=await axios.post(`/api/v1/auth/${endPoint}`,currentUser);
             const {user,token,location}=data;
-            console.log("data",data)
-            console.log("register",alertText,endPoint)
             dispatch({type:SETUP_USER_SUCCESS,payload:{user,token,location,alertText}})
             addUserToLocalStorage({user,token,location})
         }catch(err){
-          
             dispatch({type:SETUP_USER_ERROR,payload:{msg:err.response.data.msg}})
         }
         clearAlert()
