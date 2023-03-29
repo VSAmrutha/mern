@@ -1,7 +1,7 @@
 import React,{ useReducer,useEffect,useContext} from 'react';
 import reducer from "./reducer";
 import axios from 'axios';
-import { CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT ,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
+import { EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT ,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
 
 const token=localStorage.getItem('token')
 const user=localStorage.getItem('user')
@@ -15,6 +15,7 @@ const initialState={
     token:token,
     userLocation:userLocation || '',
     showSidebar:false,
+    //job related state
     jobLocation:userLocation || '',
     editJobId:'',
     isEditing:'',
@@ -23,7 +24,12 @@ const initialState={
     jobTypeOptions:['full-time','part-time','remote','internship'],
     jobType:'full-time',
     status:'pending',
-    statusOptions:['pending','interviewed','declined']
+    statusOptions:['pending','interviewed','declined'],
+    // pagination, getAllJobs
+    jobs:[],
+    totalJobs:0,
+    numOfPages:1,
+    page:1
 
 }
 const AppContext=React.createContext();
@@ -31,7 +37,7 @@ const AppContext=React.createContext();
 const AppProvider=({children})=>{
     const [state,dispatch]=useReducer(reducer,initialState);
     const authFetch=axios.create({
-        baseURL:'/api/v1',
+        baseURL:'http://localhost:5000/api/v1',
     })
     //Interceptors: request
     authFetch.interceptors.request.use((config)=>{
@@ -74,7 +80,7 @@ const AppProvider=({children})=>{
     const setupUser=async({currentUser,endPoint,alertText})=>{
         dispatch({type:SETUP_USER_BEGIN})
         try{
-            const {data}=await axios.post(`/api/v1/auth/${endPoint}`,currentUser);
+            const {data}=await authFetch.post(`/auth/${endPoint}`,currentUser);
             const {user,token,location}=data;
             dispatch({type:SETUP_USER_SUCCESS,payload:{user,token,location,alertText}})
             addUserToLocalStorage({user,token,location})
@@ -127,7 +133,47 @@ const AppProvider=({children})=>{
         clearAlert()
 
     }
-    return <AppContext.Provider value={{...state,displayAlert,clearAlert,setupUser,toggleSidebar,logoutUser,updateUser,handleChange,clearValues,createJob}}>
+    const getJobs=async()=>{
+        let url=`/jobs`
+        dispatch({type:GET_JOBS_BEGIN})
+        try{
+            const {data}=await authFetch(url);
+            const {jobs,totalJobs,numOfPages}=data
+            dispatch({type:GET_JOBS_SUCCESS,payload:{jobs,totalJobs,numOfPages}})
+        }catch(err){
+           console.log(err) 
+        //   logoutUser()
+        }
+        clearAlert()
+    }
+    const setEditJob=(id)=>{
+        dispatch({type:SET_EDIT_JOB,payload:{id}})
+    }
+    const editJob=async()=>{
+        dispatch({type:EDIT_JOB_BEGIN})
+        try{
+            const {position,company,jobLocation,status,jobType}=state;
+            await authFetch.patch(`/jobs/${state.editJobId}`,{position,company,jobLocation,status,jobType});
+            dispatch({type:EDIT_JOB_SUCCESS})
+            dispatch({type:CLEAR_VALUES})
+        }catch(err){
+            console.log(err)
+            if(err.response.status===401) return
+            dispatch({EDIT_JOB_ERROR,payload:{msg:err.response.data.msg}})
+        }
+        clearAlert()
+    }
+    const deleteJob=async(jobId)=>{
+     dispatch({type:DELETE_JOB_BEGIN})
+       try{
+        await authFetch.delete(`/jobs/${jobId}`);
+        getJobs()
+       }catch(err){
+        console.log("err")
+        //logoutUser()
+       }
+    }
+    return <AppContext.Provider value={{...state,displayAlert,clearAlert,setupUser,toggleSidebar,logoutUser,updateUser,handleChange,clearValues,createJob,getJobs,setEditJob,deleteJob,editJob}}>
         {children}
     </AppContext.Provider>
 }

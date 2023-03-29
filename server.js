@@ -13,7 +13,7 @@ import authenticateUser from './middleware/auth.js';
 //Routes
 import authRouter from './routes/authRoutes.js'
 import jobsRouter from './routes/jobsRoutes.js'
-//app.use(cors())
+app.use(cors())
 if(process.env.NODE_ENV!=='production'){
     app.use(morgan('dev'))
 }
@@ -40,3 +40,5 @@ const start=async()=>{
     }
 }
 start()
+
+//"proxy": "http://localhost:5000"

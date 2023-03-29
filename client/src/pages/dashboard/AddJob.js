@@ -2,7 +2,7 @@ import { FormRow, Alert ,FormRowSelect} from '../../components';
 import { useAppContext } from '../../context/appContext';
 import Wrapper from '../../assets/wrappers/DashboardFormPage';
 const AddJob = () => {
-  const { createJob,clearValues,jobLocation,editJobId, isEditing, company,
+  const { editJob,createJob,clearValues,jobLocation,editJobId, isEditing, company,
   position,jobTypeOptions,jobType,status,statusOptions,showAlert,displayAlert,handleChange,isLoading}=useAppContext()
   const handleJobInput=(e)=>{
     const name=e.target.name;
@@ -16,7 +16,7 @@ const AddJob = () => {
       return
     }
     if(isEditing){
-      //eventually editjob ()
+      editJob()
       return
     }
     createJob()
