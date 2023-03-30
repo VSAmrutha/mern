@@ -24,7 +24,7 @@ const initialState={
     jobTypeOptions:['full-time','part-time','remote','internship'],
     jobType:'full-time',
     status:'pending',
-    statusOptions:['pending','interviewed','declined'],
+    statusOptions:['pending','interview','declined'],
     // pagination, getAllJobs
     jobs:[],
     totalJobs:0,
