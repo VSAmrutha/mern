@@ -1,7 +1,7 @@
 import React,{ useReducer,useEffect,useContext} from 'react';
 import reducer from "./reducer";
 import axios from 'axios';
-import { EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT ,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
+import { SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT ,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
 
 const token=localStorage.getItem('token')
 const user=localStorage.getItem('user')
@@ -29,7 +29,10 @@ const initialState={
     jobs:[],
     totalJobs:0,
     numOfPages:1,
-    page:1
+    page:1,
+    //stats
+    stats:{},
+    monthlyApplications:[]
 
 }
 const AppContext=React.createContext();
@@ -173,7 +176,16 @@ const AppProvider=({children})=>{
         //logoutUser()
        }
     }
-    return <AppContext.Provider value={{...state,displayAlert,clearAlert,setupUser,toggleSidebar,logoutUser,updateUser,handleChange,clearValues,createJob,getJobs,setEditJob,deleteJob,editJob}}>
+    const showStats=async()=>{
+        dispatch({type:SHOW_STATS_BEGIN})
+        try{
+            const {data}=await authFetch('/jobs/stats')
+            dispatch({type:SHOW_STATS_SUCCESS,payload:{stats:data.defaultStats,monthlyApplications:data.monthlyApplications}})
+        }catch(err){
+            console.log(err)
+        }
+    }
+    return <AppContext.Provider value={{...state,displayAlert,clearAlert,setupUser,toggleSidebar,logoutUser,updateUser,handleChange,clearValues,createJob,getJobs,setEditJob,deleteJob,editJob,showStats}}>
         {children}
     </AppContext.Provider>
 }

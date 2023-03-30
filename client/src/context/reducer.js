@@ -1,4 +1,4 @@
-import { EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
+import { SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
 
 import {initialState} from './appContext'
 const reducer=(state,action)=>{
@@ -83,6 +83,13 @@ const reducer=(state,action)=>{
     if(action.type===EDIT_JOB_ERROR){
         return {...state,isLoading:false,showAlert:true,alertType:'danger',alertText:action.payload.msg}
     }
+    if(action.type===SHOW_STATS_BEGIN){
+        return {...state,isLoading:true,showAlert:false}
+    }
+    if(action.type===SHOW_STATS_SUCCESS){
+        return {...state,isLoading:false,stats:action.payload.stats,monthlyApplications:action.payload.monthlyApplications}
+    }
+     
     throw new Error(`no such action:${action.type}`)
 }
 export default reducer;
