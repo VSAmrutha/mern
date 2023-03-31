@@ -1,4 +1,4 @@
-import { CLEAR_FILTERS,SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
+import {CHANGE_PAGE, CLEAR_FILTERS,SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
 
 import {initialState} from './appContext'
 const reducer=(state,action)=>{
@@ -36,7 +36,7 @@ const reducer=(state,action)=>{
         return {...state,isLoading:false,showAlert:true,alertType:'danger',alertText:action.payload.msg}
     }
     if(action.type===HANDLE_CHANGE){
-        return {...state,[action.payload.name]:action.payload.value}
+        return {...state,page:1,[action.payload.name]:action.payload.value}
     }
     if(action.type===CLEAR_VALUES){
         const initialState={
@@ -94,6 +94,9 @@ const reducer=(state,action)=>{
         searchStatus:'all',
         searchType:'all',
         sort:'latest'}
+    }
+    if(action.type===CHANGE_PAGE){
+        return {...state,page:action.payload.page}
     }
      
     throw new Error(`no such action:${action.type}`)
