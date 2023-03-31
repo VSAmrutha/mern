@@ -1,7 +1,7 @@
 import React,{ useReducer,useEffect,useContext} from 'react';
 import reducer from "./reducer";
 import axios from 'axios';
-import { SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT ,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
+import { CLEAR_FILTERS,SHOW_STATS_BEGIN,SHOW_STATS_SUCCESS,EDIT_JOB_BEGIN,EDIT_JOB_SUCCESS,EDIT_JOB_ERROR,DELETE_JOB_BEGIN,SET_EDIT_JOB,GET_JOBS_BEGIN,GET_JOBS_SUCCESS,CREATE_JOB_BEGIN,CREATE_JOB_SUCCESS,CREATE_JOB_ERROR,CLEAR_VALUES,HANDLE_CHANGE,DISPLAY_ALERT ,CLEAR_ALERT,SETUP_USER_BEGIN,SETUP_USER_SUCCESS,SETUP_USER_ERROR,TOGGLE_SIDEBAR,LOGOUT_USER,UPDATE_USER_BEGIN,UPDATE_USER_SUCCESS,UPDATE_USER_ERROR} from "./action";
 
 const token=localStorage.getItem('token')
 const user=localStorage.getItem('user')
@@ -32,7 +32,13 @@ const initialState={
     page:1,
     //stats
     stats:{},
-    monthlyApplications:[]
+    monthlyApplications:[],
+    //search and sort
+    search:'',
+    searchStatus:'all',
+    searchType:'all',
+    sort:'latest',
+    sortOptions:['latest','oldest','a-z','z-a']
 
 }
 const AppContext=React.createContext();
@@ -137,7 +143,12 @@ const AppProvider=({children})=>{
 
     }
     const getJobs=async()=>{
-        let url=`/jobs`
+        const {search,searchStatus,searchType,sort}=state;
+
+        let url=`/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}`
+        if(search){
+            url=url+`&search=${search}`
+        }
         dispatch({type:GET_JOBS_BEGIN})
         try{
             const {data}=await authFetch(url);
@@ -185,7 +196,10 @@ const AppProvider=({children})=>{
             console.log(err)
         }
     }
-    return <AppContext.Provider value={{...state,displayAlert,clearAlert,setupUser,toggleSidebar,logoutUser,updateUser,handleChange,clearValues,createJob,getJobs,setEditJob,deleteJob,editJob,showStats}}>
+    const clearFilters=()=>{
+       dispatch({type:CLEAR_FILTERS})
+    }
+    return <AppContext.Provider value={{...state,displayAlert,clearAlert,setupUser,toggleSidebar,logoutUser,updateUser,handleChange,clearValues,createJob,getJobs,setEditJob,deleteJob,editJob,showStats,clearFilters}}>
         {children}
     </AppContext.Provider>
 }
