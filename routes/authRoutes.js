@@ -2,7 +2,7 @@ import express from 'express';
 const router=express.Router();
 import authenticateUser from '../middleware/auth.js';
 import {register, login, updateUser} from '../controllers/authController.js';
-import rateLimiter from 'express-arte-limit'
+import rateLimiter from 'express-rate-limit'
 
 const apiLimiter=rateLimiter({
     windows:15*60*1000,
