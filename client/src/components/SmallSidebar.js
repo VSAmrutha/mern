@@ -5,6 +5,7 @@ import NavLinks  from './NavLinks';
 import Logo from './Logo';
 
 const SmallSidebar = () => {
+
   const {showSidebar,toggleSidebar}=useAppContext()
   return (
     <Wrapper>
@@ -22,5 +23,4 @@ const SmallSidebar = () => {
     </Wrapper>
   )
 }
-
 export default SmallSidebar

@@ -4,6 +4,7 @@ import img from '../assets/images/not-found.svg';
 import Wrapper from '../assets/wrappers/ErrorPage';
 const Error = () => {
     return (
+      
      <Wrapper>
          <div>
       <img src={img} alt='not found' />

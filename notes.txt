@@ -4,7 +4,7 @@ in order to avoid cors error using cors(temporary fix, works for local developme
  * "type":"module", in package helps to use es6(import/export feature)
 * import notFoundMiddleware from "./middleware/not-found.js"=> .js is needed for node if we are using ES6
 * mongoose connect method return a promise so async and await is needed
-* next (err) will pass to error handler middleware bu authController
+* next (err) will pass to error handler middleware by authController
      const register=async(req,res,next)=>{
     try{
         const user =await User.create(req.body);
@@ -14,3 +14,33 @@ in order to avoid cors error using cors(temporary fix, works for local developme
     }
 }
 * Uisng 'express-async-errors' helps not to write try catch blocks in every controller, this package will pass it to next middleware i,e error-handler
+
+***********COOKIES*****************
+SERVER STEP 1: Create a utils file with
+````
+const attachCookies=({res,token})=>{
+     const oneDay=1000*24*60*60
+    res.cookie('token',token,{
+        httpOnly:true,
+        expires:new Date(Date.now()+oneDay),
+        secure:process.env.NODE_ENV==='production'
+    })
+}
+export default attachCookies;
+
+SERVER STEP 2: Import in authController and call attachCookies right after generating the token using createJWT
+````
+ attachCookies(res,token)
+SERVER STEP 3: How to access the token ? npm install cookie-parser
+``add the following in server.js then we will be able to access "req.cookies" in auth
+app.use(cookieParser())
+SERVER STEP 4: Add a check for req.cookies.token in authenticator folder(auth.js)
+````
+const token=req.cookies.token
+if(!token){
+    throw new UnAuthenticatedError('Authentication Invalid')
+}
+````
+SERVER STEP 5: Front need not send token, automatically brwoser sends the token
+
+***********DEPLOYMENT*****************

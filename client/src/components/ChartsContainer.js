@@ -17,5 +17,4 @@ const ChartsContainer = () => {
     </Wrapper>
   )
 }
-
 export default ChartsContainer

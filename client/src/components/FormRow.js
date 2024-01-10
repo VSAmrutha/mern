@@ -8,5 +8,4 @@ const FormRow = ({handleChange,name ,value ,labelText,type}) => {
     </div>
   )
 }
-
 export default FormRow

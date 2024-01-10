@@ -48,6 +48,7 @@ const AppProvider=({children})=>{
     const authFetch=axios.create({
         baseURL:'http://localhost:5000/api/v1',
     })
+    // baseURL:'/api/v1',
     //Interceptors: request
     authFetch.interceptors.request.use((config)=>{
         config.headers['Authorization']=`Bearer ${state.token}`
@@ -102,6 +103,7 @@ const AppProvider=({children})=>{
         clearAlert()
     }
     const toggleSidebar=()=>{
+        console.log("test")
         dispatch({type:TOGGLE_SIDEBAR})
     }
     const logoutUser=()=>{

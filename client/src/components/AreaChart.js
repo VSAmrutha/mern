@@ -7,7 +7,6 @@ import {
     CartesianGrid,
     Tooltip,
   } from 'recharts';
-
 const AreaChartComponent = ({data}) => {
   return (
     <ResponsiveContainer width='100%' height={300}>

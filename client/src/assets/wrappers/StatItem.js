@@ -16,6 +16,7 @@ const Wrapper = styled.article`
     font-size: 50px;
     color: ${(props) => props.color};
   }
+  
   .title {
     margin: 0;
     text-transform: capitalize;
